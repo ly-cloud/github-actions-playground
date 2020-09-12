@@ -2,9 +2,11 @@ name: CI
 
 on:
   push:
-    branches: master
+    branches:
+      - master
   pull_request:
-    branches: master
+    branches:
+      - master
 
 jobs:
   job_1:
@@ -20,7 +22,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run version bump script
-        working-directory: ./simpver
+        working-directory: simpver
         run: |
           pip install -r requirements.txt
           python3 simp-bump.py
