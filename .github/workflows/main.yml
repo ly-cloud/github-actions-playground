@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: master
+  pull_request:
+    branches: master
+
+jobs:
+  job_1:
+    name: Version Bump
+    runs-on: ubuntu-latest
+    container:
+      image: python:slim
+      env:
+        GH_ACCESS_TOKEN: ${{ secrets.GHCR_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run version bump script
+        working-directory: ./simpver
+        run: |
+          pip install -r requirements.txt
+          python3 simp-bump.py
+
+      - name: Upload version artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: version
+          path: ./simpver/.version
+
+  job_2:
+    name: Create Version Badge
+    needs: job_1
+    runs-on: ubuntu-latest
+    container: python:slim
+    steps:
+      - name: Download version artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: version
+
+      - name: Create badge
+        run: |
+          pip install anybadge
+          LATEST_TAG=$(cat .version)
+          anybadge -l version -v $LATEST_TAG -f version.svg -c teal
+
+      - name: Upload version badge artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: badge
+          path: version.svg
