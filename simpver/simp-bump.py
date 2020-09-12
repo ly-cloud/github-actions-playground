@@ -84,10 +84,10 @@ def main():
     print('Current:', current)
 
     new_version = bump(repo, current)
-    ref = tag_latest_commit(repo, new_version)
-    print('New:', ref)
+    tag_latest_commit(repo, new_version)
+    print('New:', new_version)
 
-    create_artifact(ref)
+    create_artifact(new_version)
 
     return 0
 
