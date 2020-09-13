@@ -26,6 +26,7 @@ def get_pull_request_labels(repo):
 def big_bump(version_tag):
     split = version_tag.replace('v', '').split('.')
     split[0] = str(int(split[0]) + 1)
+    split[1] = '0'
     return 'v' + '.'.join(split)
 
 
